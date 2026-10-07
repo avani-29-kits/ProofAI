@@ -57,6 +57,8 @@ for i, (name, files, q, kind, chk) in enumerate(Q):
     else: passed = bool(r["no"]) and (chk is None or chk.lower() in r["s"].lower()); verified = "✓ refused" if r["no"] else "✗ ANSWERED"
     ok_n += passed
     rows.append((passed, name, kind, verified, (r["a"] + " — " + r["s"])[:58], f"{time.time() - t:.1f}s"))
+if "--json" in sys.argv:
+    import json; print(json.dumps({"rows": [{"pass": bool(p), "name": n, "kind": k, "detail": d, "secs": t} for p, n, k, v, d, t in rows], "passed": int(ok_n), "total": len(rows)})); sys.exit(0)
 w = max(len(r[1]) for r in rows)
 print(f"\n{'':2}{'case':<{w}}  {'expect':<8}{'got':<12}detail")
 for p, n, k, v, d, t in rows: print(f"{'✅' if p else '❌'} {n:<{w}}  {'answer' if k == 'ok' else 'refuse':<8}{v:<12}{d}")

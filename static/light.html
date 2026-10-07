@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofAI: every answer comes with its proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,700&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9eef3;--card:#fff;--ink:#0f1b2d;--mut:#5a6779;--line:#d5dce5;--ok:#0a7b5a;--okbg:#e3f5ee;--no:#b23a1d;--nobg:#fbeae4;--ac:#2a3cc7;--acbg:#e8ebfb;
+--serif:'Fraunces',Georgia,serif;--sans:'Hanken Grotesk','Segoe UI',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0}
+body{font:400 16px/1.55 var(--sans);color:var(--ink);background:linear-gradient(rgba(213,220,229,.6) 1px,transparent 1px) 0 0/100% 32px,linear-gradient(90deg,rgba(213,220,229,.6) 1px,transparent 1px) 0 0/32px 100%,var(--bg);min-height:100vh}
+.app{max-width:1180px;margin:0 auto;padding:0 20px 90px}
+header{display:flex;align-items:center;gap:18px;padding:20px 0;flex-wrap:wrap}
+.logo{font:700 26px var(--serif);display:flex;align-items:center;gap:10px;margin-right:auto}.logo svg{width:30px;height:30px}
+nav{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+nav button{background:none;border:0;padding:8px 16px;border-radius:9px;font:500 15px var(--sans);color:var(--mut)}nav button.on{background:var(--ink);color:#fff}
+.pill{font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--mut);display:inline-flex;gap:8px;align-items:center}
+.pill i{width:8px;height:8px;border-radius:50%;background:#d49a1f}.pill.on i{background:var(--ok)}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:26px;align-items:start}@media(max-width:900px){.layout{grid-template-columns:1fr}}
+aside{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px}@media(max-width:900px){aside{position:static}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.panel h2{font:700 18px var(--serif);margin-bottom:12px;display:flex;justify-content:space-between;align-items:baseline}.panel h2 small{font:400 13px var(--sans);color:var(--mut)}
+button{font:600 14px var(--sans);cursor:pointer}
+.btn{border:0;border-radius:10px;padding:10px 18px;background:var(--ac);color:#fff}.btn:hover{filter:brightness(1.12)}.btn:disabled{opacity:.5}
+.ghost{border:1px solid var(--line);border-radius:9px;padding:7px 12px;background:var(--card);color:var(--ink)}.ghost:hover{border-color:var(--ac);color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ds{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;position:relative;background:#f9fbfd}
+.ds b{font:600 15px var(--mono)}.ds small{display:block;color:var(--mut);font-size:13px}
+.ds em{font-style:normal;font-size:12px;color:#8a5a00;background:#fff3d6;padding:1px 7px;border-radius:6px;margin:4px 4px 0 0;display:inline-block}
+.ds button{position:absolute;right:6px;top:4px;border:0;background:none;font-size:18px;color:var(--mut)}
+.empty{color:var(--mut);font-size:14px}
+.hist a{display:block;padding:7px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink);text-decoration:none}.hist a small{display:block;color:var(--ok);font-size:12px}.hist a.r small{color:var(--no)}.hist a:hover{color:var(--ac)}
+h1{font:700 clamp(34px,5vw,54px)/1.05 var(--serif);letter-spacing:-.02em;max-width:16ch}
+.lede{color:var(--mut);max-width:60ch;margin:12px 0 22px;font-size:17px}
+.ask{display:flex;gap:10px;background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:8px;box-shadow:5px 5px 0 var(--ink)}.ask:focus-within{border-color:var(--ac);box-shadow:5px 5px 0 var(--ac)}
+.ask input{flex:1;min-width:0;border:0;outline:0;font:500 17px var(--sans);padding:10px 12px;background:none;color:var(--ink)}.ask .btn{font-size:15px;padding:10px 22px}
+.chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}.chips>span{font-size:13px;color:var(--mut)}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 13px;font:500 14px var(--sans);color:var(--ink)}.chip:hover{border-color:var(--ac);color:var(--ac)}
+.chip.t{border-style:dashed;border-color:#e0a898;background:#fff8f5}.chip.t:hover{border-color:var(--no);color:var(--no)}
+#out{margin-top:30px;display:flex;flex-direction:column;gap:22px}
+.res{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 26px 22px;position:relative;box-shadow:0 18px 40px -28px rgba(15,27,45,.45)}
+.q{color:var(--mut);font-size:15px;max-width:calc(100% - 150px)}
+.stamp{position:absolute;right:22px;top:20px;transform:rotate(-5deg);border:2.5px solid;border-radius:10px;padding:3px 13px 4px;font:italic 700 20px var(--serif);display:flex;gap:7px;align-items:center;animation:st .55s cubic-bezier(.3,1.6,.5,1) both}
+.stamp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ok .stamp{color:var(--ok);background:var(--okbg)}.no .stamp{color:var(--no);background:var(--nobg)}
+@keyframes st{from{opacity:0;transform:rotate(-14deg) scale(2.2)}}
+.ans{font:700 clamp(34px,6vw,60px)/1.05 var(--serif);letter-spacing:-.02em;margin:14px 0 6px;word-break:break-word}.ok .ans{color:var(--ok)}.no .ans{color:var(--no)}
+.s{color:var(--mut);font-size:17px;max-width:68ch}
+.ev{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 4px}.ev span{font:400 12.5px var(--mono);padding:3px 9px;border-radius:7px;background:#eff3f7;border:1px solid var(--line)}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;margin-top:20px}@media(max-width:760px){.cols{grid-template-columns:1fr}.q{max-width:100%;margin-top:34px}}
+h3{font:600 14px var(--sans);margin-bottom:10px}
+.bar{display:grid;grid-template-columns:96px 1fr auto;gap:10px;align-items:center;font-size:13px;margin:7px 0}.bar span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar div{height:14px;border-radius:4px;background:#eef2f6}.bar i{display:block;height:100%;width:0;border-radius:4px;background:var(--ok);transition:width .9s cubic-bezier(.2,.8,.2,1)}.no .bar i{background:var(--no)}.bar span:last-child{color:var(--mut);font:12px var(--mono)}
+ul.c{list-style:none;padding:0}ul.c li{padding:4px 0 4px 26px;position:relative;font-size:14px}
+ul.c li:before{content:"✓";position:absolute;left:0;top:5px;width:18px;height:18px;border-radius:50%;background:var(--okbg);color:var(--ok);font-size:11px;font-weight:700;display:grid;place-items:center}
+.no ul.c li:before{content:"–";background:var(--nobg);color:var(--no)}
+.note{font-size:13.5px;color:var(--mut);margin-top:16px;padding:10px 14px;background:var(--acbg);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--mut);font-weight:500}td:not(:first-child){font-family:var(--mono)}
+pre,textarea.code{font:400 13px/1.65 var(--mono);background:var(--ink);color:#e4eaf5;border-radius:12px;padding:16px;overflow:auto;max-height:340px;white-space:pre;width:100%;display:block;border:0}
+textarea.code{min-height:230px;resize:vertical;outline:0}
+pre i{font-style:normal}.c{color:#7d8fb0}.st{color:#f2c46d}.k{color:#9fb0ff}.n{color:#6fe0bd}
+details{margin-top:18px}summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--ac)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}.acts a{text-decoration:none}
+.msg{font-size:14px;color:var(--mut)}.msg.good{color:var(--ok)}.msg.bad{color:var(--no)}
+.steps{font-size:18px;margin:16px 0 8px}.sk{height:12px;border-radius:6px;margin:12px 0;background:linear-gradient(90deg,#eef2f6,#dbe2f5,#eef2f6);background-size:200%;animation:sh 1.2s linear infinite}@keyframes sh{to{background-position:-200%}}
+.score{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin:6px 0 18px}.score b{font:700 56px var(--serif);color:var(--ok);line-height:1}.score span{color:var(--mut)}
+.case{display:grid;grid-template-columns:24px 1.2fr 80px 2fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;align-items:baseline}
+.case .m{font-weight:700;color:var(--ok)}.case.bad .m{color:var(--no)}.case small{color:var(--mut)}.case code{font:12.5px var(--mono);color:var(--mut)}
+@media(max-width:700px){.case{grid-template-columns:24px 1fr}.case small,.case code{grid-column:2}}
+#drop{position:fixed;inset:12px;z-index:50;display:none;place-items:center;background:rgba(233,238,243,.93);border:3px dashed var(--ac);border-radius:24px;font:700 38px var(--serif);color:var(--ac)}#drop.on{display:grid}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;transition:transform .35s;z-index:60;max-width:90vw;font-size:14px}#toast.on{transform:translate(-50%,0)}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="drop">Drop CSV, XLSX or JSON files</div>
+<div class="app">
+<header>
+ <div class="logo"><svg viewBox="0 0 32 32" fill="none"><rect x="3" y="3" width="26" height="26" rx="8" fill="#0f1b2d"/><path d="M9 16.5l5 5 9-11" stroke="#5fe3b8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>ProofAI</div>
+ <nav><button class="on" data-v="ask">Ask</button><button data-v="bench">Benchmark</button></nav>
+ <span class="pill" id="pl"><i></i><span>connecting…</span></span>
+</header>
+<div class="layout">
+<aside>
+ <section class="panel"><h2>Your data <small id="cnt"></small></h2><div id="ds"></div>
+  <div class="btns"><button class="ghost" id="up">Upload files</button><button class="ghost" id="smp">Sample sales</button><button class="ghost" id="trp" title="Replaces your tables with deliberately broken files">Trap files</button></div>
+  <input type="file" id="fi" multiple accept=".csv,.tsv,.txt,.xlsx,.xls,.json" hidden></section>
+ <section class="panel hist"><h2>Recent questions</h2><div id="hl"><p class="empty">Nothing asked yet.</p></div></section>
+</aside>
+<main>
+ <section id="v-ask">
+  <h1>Ask your data. Get the proof.</h1>
+  <p class="lede">Each number ships with the pandas code that made it, re-run in a clean process from your original files. When the data can’t support an answer, ProofAI says so instead of guessing.</p>
+  <form class="ask" id="f"><input id="q" autocomplete="off" placeholder="e.g. Which region generated the highest Q2 revenue?" aria-label="Question"><button class="btn" id="go">Get proof</button></form>
+  <div class="chips" id="c1"></div><div class="chips" id="c2"></div>
+  <div id="out" aria-live="polite"></div>
+ </section>
+ <section id="v-bench" hidden>
+  <h1>Can it be trusted?</h1>
+  <p class="lede">27 cases run live against the engine: 11 answerable questions checked against independent pandas ground truth, and 16 trick questions that must be refused.</p>
+  <button class="btn" id="rb">Run benchmark</button>
+  <div class="panel" id="bo" style="margin-top:20px" hidden></div>
+ </section>
+</main></div></div>
+<div id="toast" role="status"></div>
+<script>
+const $=(s,e=document)=>e.querySelector(s),SID=localStorage.sid||(localStorage.sid=Math.random().toString(36).slice(2,12));
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function api(p,o={}){const r=await fetch(p,{...o,headers:{'X-Session':SID,...(o.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||r.statusText);return d}
+const post=(p,b)=>api(p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})});
+let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3500)};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));$('#v-ask').hidden=b.dataset.v!=='ask';$('#v-bench').hidden=b.dataset.v!=='bench'});
+const OK=['Which region generated the highest Q2 revenue?','Top 5 products by revenue','What is the total revenue?','Find unusual values in revenue','Test missing data'],TR=['What was the revenue in 2021?','What will be the revenue in 2026?','What was the revenue in Q5?','What is the average employee salary?','What was the revenue last quarter?'];
+$('#c1').innerHTML='<span>Try</span>'+OK.map(q=>`<button type="button" class="chip">${q}</button>`).join('');
+$('#c2').innerHTML='<span title="ProofAI should refuse these">Trick questions</span>'+TR.map(q=>`<button type="button" class="chip t">${q}</button>`).join('');
+$('.layout').addEventListener('click',e=>{const c=e.target.closest('.chip');if(c){$('#q').value=c.textContent;ask(c.textContent)}});
+async function loadDS(){try{const{datasets}=await api('/api/datasets');$('#cnt').textContent=datasets.length?datasets.length+' tables':'';
+$('#ds').innerHTML=datasets.length?datasets.map(d=>`<div class="ds"><b>${esc(d.name)}</b><small>${esc(d.file)}</small><small>${d.rows.toLocaleString()} rows · ${d.cols} columns</small>${d.duplicate_rows?`<em>${d.duplicate_rows} duplicates</em>`:''}${d.nulls?`<em>${d.nulls} missing</em>`:''}<button data-del="${esc(d.name)}" aria-label="Remove ${esc(d.name)}">×</button></div>`).join(''):'<p class="empty">No data yet. Drop files anywhere, or load a sample set.</p>';return datasets}catch(e){toast(e.message);return[]}}
+$('#ds').onclick=async e=>{const n=e.target.dataset.del;if(n){await api('/api/datasets/'+encodeURIComponent(n),{method:'DELETE'}).catch(x=>toast(x.message));loadDS()}};
+const load=async k=>{try{await post('/api/datasets/'+k);toast(k==='traps'?'Trap files loaded (other tables replaced)':'Sample data loaded');loadDS()}catch(e){toast(e.message)}};
+$('#smp').onclick=()=>load('sample');$('#trp').onclick=()=>load('traps');$('#up').onclick=()=>$('#fi').click();
+async function upload(files){if(!files.length)return;const fd=new FormData();[...files].forEach(f=>fd.append('files',f,f.name));try{const r=await api('/api/datasets',{method:'POST',body:fd});toast(r.errors?.length?r.errors[0].file+': '+r.errors[0].error:`Added ${r.added.length} table${r.added.length==1?'':'s'}`);loadDS()}catch(e){toast(e.message)}}
+$('#fi').onchange=e=>{upload(e.target.files);e.target.value=''};
+let dc=0;addEventListener('dragenter',e=>{e.preventDefault();dc++;$('#drop').classList.add('on')});addEventListener('dragleave',()=>{if(--dc<=0){dc=0;$('#drop').classList.remove('on')}});addEventListener('dragover',e=>e.preventDefault());addEventListener('drop',e=>{e.preventDefault();dc=0;$('#drop').classList.remove('on');upload(e.dataTransfer.files)});
+async function loadHist(){try{const{history}=await api('/api/history');if(history.length)$('#hl').innerHTML=history.slice(0,8).map(x=>`<a href="#" data-q="${esc(x.question)}" class="${x.status=='refused'?'r':''}">${esc(x.question)}<small>${x.status=='refused'?'Cannot determine':esc(x.answer)}</small></a>`).join('')}catch{}}
+$('#hl').onclick=e=>{const a=e.target.closest('a');if(a){e.preventDefault();$('#q').value=a.dataset.q;$('#q').focus()}};
+addEventListener('keydown',e=>{if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('#q').focus()}});
+const hl=c=>esc(c).replace(/(#.*$)|(&quot;[^\n]*?&quot;)|\b(import|from|if|raise|for|in|and|or|not|True|False|None|lambda|def|return)\b|\b(\d+\.?\d*)\b/gm,(m,a,b,k,n)=>a?`<i class="c">${a}</i>`:b?`<i class="st">${b}</i>`:k?`<i class="k">${k}</i>`:`<i class="n">${n}</i>`);
+const num=v=>typeof v==='number'?v.toLocaleString(undefined,{maximumFractionDigits:2}):esc(v);
+function table(p){if(!p||p.kind==='scalar')return'';const rows=p.kind==='series'?p.index.map((k,i)=>[k,p.values[i]]):p.rows,head=p.kind==='series'?['',p.name||'value']:p.columns;
+return`<h3>Result · ${p.total_rows} row${p.total_rows==1?'':'s'}</h3><div style="overflow:auto"><table><tr>${head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>${rows.slice(0,10).map(r=>`<tr>${r.map(v=>`<td>${num(v)}</td>`).join('')}</tr>`).join('')}</table></div>`}
+function chart(r){if(!r.ch)return'';const mx=Math.max(...r.ch.v.map(Math.abs),1e-9);return`<h3>${esc(r.t)}${r.u?` · ${esc(r.u)}`:''}</h3>`+r.ch.l.map((l,i)=>`<div class="bar"><span>${esc(l)}</span><div><i data-w="${Math.abs(r.ch.v[i])/mx*100}"></i></div><span>${r.ch.v[i].toLocaleString()}</span></div>`).join('')}
+function card(q,r){const ok=!r.no,c=document.createElement('article');c.className=`res ${ok?'ok':'no'}`;
+c.innerHTML=`<span class="stamp"><svg viewBox="0 0 24 24"><path d="${ok?'M4 12l6 6L20 6':'M6 6l12 12M18 6L6 18'}"/></svg>${ok?'Verified':'Withheld'}</span>
+<div class="q">${esc(q)}</div><div class="ans">${esc(r.a)}</div><p class="s">${esc(r.s)}</p>
+<div class="ev">${(r.ev||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+<div class="cols"><div>${chart(r)||table(r.result)}</div><div><h3>${esc(r.vt||'')}${r.tm&&r.tm!=='—'?` · ${esc(r.tm)}`:''}</h3><ul class="c">${(r.chk||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div>
+${r.ch&&r.result?table(r.result):''}${r.note?`<p class="note">${esc(r.note)}</p>`:''}${r.output?`<h3 style="margin-top:16px">Printed output</h3><pre>${esc(r.output)}</pre>`:''}
+<details${ok?'':' open'}><summary>${ok?'Show the code behind this answer':'Show what was checked'}</summary><div class="cd" style="margin-top:12px"><pre>${hl(r.code)}</pre></div></details>
+<div class="acts">${ok&&r.id?`<button class="ghost" data-act="v">Verify again</button><button class="ghost" data-act="e">Edit and re-run</button>`:''}${r.script_url?`<a href="${r.script_url}" download><button class="ghost" type="button">Download proof.py</button></a>`:''}<button class="ghost" data-act="c">Copy code</button><span class="msg"></span></div>`;
+c._r=r;return c}
+$('#out').onclick=async e=>{const b=e.target.closest('[data-act]');if(!b)return;const c=b.closest('article'),r=c._r,m=$('.msg',c),a=b.dataset.act;
+if(a==='c'){navigator.clipboard?.writeText(r.code);m.textContent='Copied';m.className='msg good'}
+else if(a==='v'){m.textContent='Re-running in a fresh process…';m.className='msg';try{const v=await post('/api/verify/'+r.id);m.textContent=v.reproduced?'Reproduced: same result from the original files':'Did not reproduce: '+v.detail;m.className='msg '+(v.reproduced?'good':'bad')}catch(x){m.textContent=x.message;m.className='msg bad'}}
+else if(a==='e'){$('.cd',c).innerHTML=`<textarea class="code" spellcheck="false">${esc(r.code)}</textarea>`;c.querySelector('details').open=true;b.dataset.act='r';b.textContent='Run edited code'}
+else if(a==='r'){m.textContent='Running edited code…';m.className='msg';try{const x=await post('/api/rerun/'+r.id,{code:$('textarea',c).value});
+if(x.status!=='ok'){m.textContent=(x.status==='cannot_determine'?'Cannot determine: ':'')+x.error;m.className='msg bad'}else{m.innerHTML=`${x.reproduced?'Reproduced independently.':'Did not reproduce.'} ${x.same_as_original?'Same as the original answer.':`Differs from the original: <b>${esc(x.original)}</b> became <b>${esc(x.edited)}</b>.`} (${x.secs}s)`;m.className='msg '+(x.same_as_original&&x.reproduced?'good':'bad')}}catch(y){m.textContent=y.message;m.className='msg bad'}}};
+const STEPS=['Profiling your tables…','Writing the analysis…','Running it in a sandbox…','Re-running it in a fresh process…'];let busy=0;
+async function ask(q){q=q.trim();if(!q||busy)return;busy=1;$('#go').disabled=true;const ld=document.createElement('article');ld.className='res';
+ld.innerHTML=`<div class="q">${esc(q)}</div><div class="steps">${STEPS[0]}</div><div class="sk" style="width:55%"></div><div class="sk" style="width:80%"></div>`;$('#out').prepend(ld);let i=0;const iv=setInterval(()=>$('.steps',ld).textContent=STEPS[Math.min(++i,3)],1400);
+try{const r=await post('/api/analyze',{question:q}),c=card(q,r);ld.replaceWith(c);requestAnimationFrame(()=>c.querySelectorAll('[data-w]').forEach(e=>e.style.width=e.dataset.w+'%'));loadHist()}
+catch(e){ld.className='res no';ld.innerHTML=`<div class="q">${esc(q)}</div><div class="ans">Request failed</div><p class="s">${esc(e.message)}. Check that the server is running and try again.</p>`}
+clearInterval(iv);busy=0;$('#go').disabled=false}
+$('#f').onsubmit=e=>{e.preventDefault();ask($('#q').value)};
+$('#rb').onclick=async()=>{const b=$('#rb'),o=$('#bo');b.disabled=true;b.textContent='Running 27 cases…';
+try{const d=await api('/api/benchmark');if(d.error)throw Error(d.error);const pct=Math.round(100*d.passed/d.total);
+o.hidden=false;o.innerHTML=`<div class="score"><b>${d.passed}/${d.total}</b><span>${pct}% correct · ${d.rows.filter(r=>r.kind==='ok').length} answerable, ${d.rows.filter(r=>r.kind==='no').length} trick questions</span></div>`+
+d.rows.map(r=>`<div class="case${r.pass?'':' bad'}"><span class="m">${r.pass?'✓':'✕'}</span><span>${esc(r.name)}</span><small>${r.kind==='ok'?'answered':'refused'}</small><code>${esc(r.detail)}</code></div>`).join('')}
+catch(e){toast(e.message)}b.disabled=false;b.textContent='Run again'};
+(async()=>{try{const h=await api('/api/health'),p=$('#pl');p.classList.toggle('on',h.planner==='llm');p.lastElementChild.textContent=h.planner==='llm'?`Claude planner · ${h.model}`:'Offline planner'}catch{$('#pl').lastElementChild.textContent='Server unreachable'}
+const d=await loadDS();if(!d.length&&!localStorage.auto){localStorage.auto=1;load('sample')}loadHist()})();
+</script></body></html>

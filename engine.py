@@ -597,3 +597,27 @@ def rerun(ws: Workspace, question: str, original_payload: dict, code: str) -> di
     return {"status": "ok", "same_as_original": common.payloads_match(run["payload"], original_payload),
             "reproduced": rep["status"] == "ok" and common.payloads_match(run["payload"], rep["payload"]),
             "original": summarize(original_payload), "edited": summarize(run["payload"]), "secs": round(run["secs"], 2)}
+
+
+# ───────────────────────── demo sets + benchmark (used by the UI) ─────────────────────────
+SETS = {"sample": ["sales.csv", "customers.csv", "products.csv"],
+        "traps": ["trap_ambiguous_dates.csv", "trap_mixed_currency.csv", "trap_conflicting_customers.csv", "trap_usd_eur_values.csv",
+                  "trap_orders.csv", "trap_payments.csv", "text_prices_usd_only.csv"]}
+HERE = Path(__file__).parent
+
+
+def load_set(ws: Workspace, key: str, replace: bool = False) -> None:
+    d = HERE / "sample_data"
+    if not (d / "sales.csv").exists(): subprocess.run([sys.executable, str(HERE / "make_sample_data.py")], check=True, cwd=HERE)
+    if replace:
+        for n in list(ws.tables): ws.delete(n)
+    for n in SETS[key]: ws.ingest(n, (d / n).read_bytes())
+
+
+def benchmark(timeout: int = 300) -> dict:
+    """Run evaluate.py --json (27 cases) and return its rows."""
+    if not (HERE / "sample_data" / "sales.csv").exists(): subprocess.run([sys.executable, str(HERE / "make_sample_data.py")], check=True, cwd=HERE)
+    p = subprocess.run([sys.executable, str(HERE / "evaluate.py"), "--json"], capture_output=True, text=True, timeout=timeout, cwd=HERE)
+    for line in reversed(p.stdout.splitlines()):
+        if line.startswith("{"): return json.loads(line)
+    return {"error": (p.stderr.strip().splitlines() or ["benchmark failed"])[-1]}

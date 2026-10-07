@@ -41,14 +41,15 @@ async def upload(files: list[UploadFile] = File(...), x_session: str = Header("d
     return {"datasets": ws.public_list(), "added": [a["name"] for a in added], "errors": errors}
 
 
-@app.post("/api/datasets/sample")
-def load_sample(x_session: str = Header("default")):
-    ws = W(x_session)
-    for name in ("sales.csv", "customers.csv", "products.csv"):
-        p = HERE / "sample_data" / name
-        if not p.exists(): raise HTTPException(500, "Run `python make_sample_data.py` first")
-        ws.ingest(name, p.read_bytes())
+@app.post("/api/datasets/{which}")
+def load_set(which: str, x_session: str = Header("default")):
+    if which not in engine.SETS: raise HTTPException(404, "Unknown dataset set")
+    ws = W(x_session); engine.load_set(ws, which, replace=which == "traps")
     return {"datasets": ws.public_list()}
+
+
+@app.get("/api/benchmark")
+def benchmark(): return engine.benchmark()
 
 
 @app.delete("/api/datasets/{name}")
@@ -99,6 +100,11 @@ def rerun(aid: str, body: Rerun):
     if not row or row["status"] != "verified": raise HTTPException(404, "Only verified analyses can be edited and re-run")
     if not body.code.strip(): raise HTTPException(400, "Empty code")
     return engine.rerun(W(row["session"]), row["question"], json.loads(row["response"])["result"], body.code)
+
+
+@app.get("/light")
+def light():
+    return FileResponse(HERE / "static" / "light.html")
 
 
 @app.get("/")

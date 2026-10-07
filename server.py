@@ -46,8 +46,10 @@ class H(BaseHTTPRequestHandler):
         p = self.path.split("?")[0]
         try:
             if p in ("/", "/index.html"): return self._send(200, (HERE / "static" / "index.html").read_bytes(), "text/html")
+            if p == "/light": return self._send(200, (HERE / "static" / "light.html").read_bytes(), "text/html")
             if p == "/api/health":
                 return self._send(200, {"ok": True, "planner": "llm" if planner.llm_enabled() else "offline", "model": planner.MODEL if planner.llm_enabled() else None})
+            if p == "/api/benchmark": return self._send(200, engine.benchmark())
             if p == "/api/datasets": return self._send(200, {"datasets": self.ws().public_list()})
             if p == "/api/history": return self._send(200, {"history": store.history(self.ws().id)})
             m = re.fullmatch(r"/api/proof/([A-Za-z0-9]+)\.py", p)
@@ -67,13 +69,9 @@ class H(BaseHTTPRequestHandler):
                     try: added += [a["name"] for a in ws.ingest(fn, data)]
                     except Exception as e: errors.append({"file": fn, "error": str(e)})
                 return self._send(200, {"datasets": ws.public_list(), "added": added, "errors": errors})
-            if p == "/api/datasets/sample":
-                ws = self.ws()
-                for name in ("sales.csv", "customers.csv", "products.csv"):
-                    f = HERE / "sample_data" / name
-                    if not f.exists():
-                        import make_sample_data  # noqa: F401  (generates the files on first use)
-                    ws.ingest(name, f.read_bytes())
+            m = re.fullmatch(r"/api/datasets/(sample|traps)", p)
+            if m:
+                ws = self.ws(); engine.load_set(ws, m.group(1), replace=m.group(1) == "traps")
                 return self._send(200, {"datasets": ws.public_list()})
             if p == "/api/analyze":
                 q = (json.loads(self._body() or b"{}").get("question") or "").strip()
