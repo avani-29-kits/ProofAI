@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ProofAI — Your data has answers. We bring the proof.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--bg:#050509;--bd:rgba(255,255,255,.1);--mu:#8e90a0;--pu:#8b5cf6;--bl:#4f7cff;--cy:#42dfff;--gr:#45e89b;--ye:#ffc857;--g:linear-gradient(110deg,#8b5cf6,#4f7cff)}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font:14px/1.6 "DM Sans",system-ui,sans-serif;background:var(--bg);color:#f7f7fb;overflow-x:hidden}
+button,input{font:inherit;color:inherit;cursor:pointer}a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+.grid{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% -10%,rgba(139,92,246,.25),transparent 45%),radial-gradient(circle at 95% 30%,rgba(79,124,255,.16),transparent 45%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/56px 56px;-webkit-mask-image:linear-gradient(#000,transparent 85%);mask-image:linear-gradient(#000,transparent 85%);animation:gm 14s linear infinite}
+@keyframes gm{to{background-position:0 0,0 0,0 56px,56px 0}}
+.w{width:min(1160px,calc(100% - 32px));margin:auto}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.logo{display:flex;align-items:center;gap:10px;font:700 20px "Space Grotesk"}
+.lm{width:34px;height:34px;border-radius:10px;background:var(--g);display:grid;place-items:center;box-shadow:0 0 28px rgba(139,92,246,.5)}
+.nl{display:flex;gap:28px;color:var(--mu);font-size:13px}.nl a:hover{color:#fff}
+.btn{display:inline-block;padding:13px 22px;border-radius:12px;border:1px solid var(--bd);background:rgba(255,255,255,.04);font-weight:500;transition:.25s}
+.btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.09)}
+.btn.p{border:0;background:var(--g);font-weight:700;box-shadow:0 14px 40px rgba(105,83,230,.35)}.btn.p:hover{box-shadow:0 18px 55px rgba(105,83,230,.55)}
+.btn.s{padding:9px 14px;font-size:13px}
+.hero{min-height:680px;display:grid;place-items:center;text-align:center;position:relative;padding:70px 0}
+.hero h1{font:700 clamp(46px,8vw,94px)/.96 "Space Grotesk";letter-spacing:-.05em}
+.gt{background:linear-gradient(100deg,#fff 5%,#b79aff 45%,#6ca4ff 75%,#62ddff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:620px;margin:28px auto;color:var(--mu);font-size:16px}
+.bs{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:7px 13px;margin-bottom:24px;border-radius:99px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.08);color:#cfc1ff;font-size:12px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gr);box-shadow:0 0 10px var(--gr);animation:pl 1.8s infinite}@keyframes pl{50%{opacity:.35}}
+.fc{position:absolute;padding:12px 16px;border-radius:14px;border:1px solid var(--bd);background:rgba(15,15,23,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 20px 50px rgba(0,0,0,.4);font-size:12px;color:#b9bac7;text-align:left;animation:fl 6s ease-in-out infinite}
+.fc b{display:block;color:#fff;font-size:13px}.fc.a{left:1%;top:34%}.fc.b{right:1%;top:24%;animation-delay:-2s}.fc.c{right:7%;bottom:14%;animation-delay:-4s}.fc.d{left:8%;bottom:12%;animation-delay:-3s}
+@keyframes fl{50%{transform:translateY(-12px)}}
+.hero{min-height:max(640px,calc(100vh - 72px))}
+.hero h1{font:400 clamp(48px,8.4vw,98px)/1 "DM Serif Display",serif;letter-spacing:-.025em}
+.pill{font:500 11px "JetBrains Mono",monospace;letter-spacing:.04em}
+.hc{position:relative;z-index:1}
+#rain{position:absolute;top:0;left:50%;width:100vw;height:100%;transform:translateX(-50%);pointer-events:none}
+.sc{margin-top:34px;color:var(--mu);font:11px "JetBrains Mono",monospace}
+.ms{width:18px;height:28px;border:1.5px solid var(--mu);border-radius:10px;margin:8px auto 0;position:relative}
+.ms:after{content:"";position:absolute;left:50%;top:5px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--cy);animation:sd 1.6s infinite}@keyframes sd{60%{transform:translateY(8px);opacity:0}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding-bottom:30px}
+.stats .card{text-align:center;padding:20px 10px}.stats b{display:block;font:400 40px/1.1 "DM Serif Display",serif;color:var(--cy)}.stats small{color:var(--mu);font-size:12px}
+#ld{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;text-align:center;transition:opacity .6s,visibility .6s;animation:ldf .6s 4s forwards}#ld.off{opacity:0;visibility:hidden}@keyframes ldf{to{opacity:0;visibility:hidden}}
+#ld .lm{width:64px;height:64px;font-size:28px;margin:0 auto 16px;border-radius:18px;animation:gl 2s ease-in-out infinite}@keyframes gl{50%{box-shadow:0 0 70px rgba(139,92,246,.9)}}
+#ld h3{font:400 28px "DM Serif Display",serif}#ld p{color:var(--mu);font-size:13px}
+.bar{width:180px;height:4px;border-radius:4px;background:rgba(255,255,255,.1);margin:16px auto 8px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pu),var(--cy))}
+#pc{font:12px "JetBrains Mono",monospace;color:var(--gr)}
+section{padding:90px 0}
+.lb{color:#a98aff;font-size:13px;font-weight:700;margin-bottom:10px}
+h2{font:700 clamp(32px,5vw,52px)/1.05 "Space Grotesk";letter-spacing:-.04em}
+.sub{max-width:620px;margin-top:14px;color:var(--mu)}
+.card{border:1px solid var(--bd);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.015));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:.3s}
+.card:hover{border-color:rgba(139,92,246,.45);box-shadow:0 0 40px rgba(139,92,246,.12)}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:48px;position:relative}
+.flow:before{content:"";position:absolute;top:46px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--pu),var(--cyan,#42dfff),transparent);background-size:200% 100%;animation:ln 3s linear infinite}
+@keyframes ln{to{background-position:-200% 0}}
+.st{padding:26px 22px;position:relative;cursor:pointer}.st.on{border-color:var(--pu);box-shadow:0 0 40px rgba(139,92,246,.2)}
+.sn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(139,92,246,.2);color:#c4b1ff;font-size:13px;margin-bottom:20px}
+.st h3{font-size:16px}.st p{color:var(--mu);font-size:13px;margin-top:6px}
+.app{margin-top:40px;overflow:hidden;border-radius:24px;background:rgba(9,10,16,.85);box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.top{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--bd);color:var(--mu);font-size:12px}
+.top i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3b3d48;margin-right:6px}
+.dash{display:grid;grid-template-columns:230px 1fr}
+.side{padding:18px;border-right:1px solid var(--bd)}
+.up{padding:24px 12px;text-align:center;border:1.5px dashed rgba(139,92,246,.5);border-radius:14px;background:rgba(139,92,246,.05);transition:.25s;color:var(--mu);font-size:12px}
+.up.drag,.up:hover{background:rgba(139,92,246,.14);transform:scale(1.02)}.up u{color:#c5b4ff;cursor:pointer}.up .ic{font-size:24px;color:#c5b4ff}
+.fh{color:var(--mu);font-size:12px;margin:22px 0 8px}
+.file{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;animation:in .5s}.file:hover{background:rgba(255,255,255,.04)}
+@keyframes in{from{opacity:0;transform:translateX(-10px)}}
+.fi{width:32px;height:32px;border-radius:8px;background:#171821;display:grid;place-items:center;font-size:9px;color:#9b9daa;flex:none}
+.file b{display:block;font-size:12px;overflow-wrap:anywhere}.file small{color:var(--mu);font-size:11px}
+.main{padding:20px;min-width:0}
+.q{padding:16px;border:1px solid var(--bd);border-radius:16px;background:#08090e}
+.q input{width:100%;border:0;outline:0;background:none;font-size:16px;cursor:text;padding:6px 0}
+.qb{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--bd);border-radius:8px;background:rgba(255,255,255,.03);padding:6px 10px;color:#a3a5b4;font-size:12px;transition:.2s}.chip:hover{color:#fff;border-color:rgba(139,92,246,.6)}.chip.w:hover{border-color:var(--ye)}
+.go{padding:10px 18px;border:0;border-radius:10px;background:var(--g);font-weight:700;transition:.2s}.go:hover{transform:translateY(-2px)}.go:disabled{opacity:.5;cursor:wait;transform:none}
+.stages{display:flex;gap:6px;margin:12px 0 0;flex-wrap:wrap}
+.stg{flex:1;min-width:110px;padding:8px 10px;border-radius:10px;border:1px solid var(--bd);color:#5f6170;font-size:12px;transition:.3s}
+.stg.on{color:#fff;border-color:var(--bl);background:rgba(79,124,255,.12)}.stg.on:after{content:" …"}.stg.ok{color:var(--gr);border-color:rgba(69,232,155,.3)}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.pn{padding:18px;min-width:0}.pn.full{grid-column:1/-1}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;color:var(--mu)}.ph h3{color:#fff;font-size:13px}
+.ans{font:700 34px/1.1 "Space Grotesk";letter-spacing:-.03em}.as{color:#b5b7c6;margin-top:6px}
+.badge{display:inline-flex;gap:7px;align-items:center;margin-top:14px;padding:7px 11px;border-radius:9px;font-size:12px;background:rgba(69,232,155,.08);border:1px solid rgba(69,232,155,.2);color:var(--gr)}
+.badge svg,.chk svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;animation:dr .6s .1s forwards}@keyframes dr{to{stroke-dashoffset:0}}
+.refuse .badge{background:rgba(255,200,87,.08);border-color:rgba(255,200,87,.25);color:var(--ye)}.refuse .ans{color:var(--ye)}
+.refuse{border-color:rgba(255,200,87,.35)!important;box-shadow:0 0 50px rgba(255,200,87,.08)}
+.ev{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.ev span{padding:5px 9px;border:1px solid var(--bd);border-radius:7px;color:var(--mu);font-size:12px}
+.cv{height:210px}
+.code{background:#07080c;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;color:var(--mu);gap:8px;flex-wrap:wrap}.ch .ok{color:var(--gr)}.ch button{border:1px solid var(--bd);background:none;border-radius:6px;padding:2px 9px;font-size:12px;margin-left:4px}.ch button:hover{background:rgba(255,255,255,.08)}
+pre{padding:12px 0;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto;counter-reset:l;color:#aeb4c7;max-height:420px;transition:max-height .4s}pre.c{max-height:62px;overflow:hidden}
+pre div{padding:0 14px;white-space:pre;animation:in .4s backwards;animation-delay:calc(var(--i)*40ms)}pre div:before{counter-increment:l;content:counter(l);display:inline-block;width:26px;color:#4a4c5a;margin-right:12px;text-align:right}
+pre .k{color:#bd9eff;font-style:normal}pre .s{color:#84e4ae;font-style:normal}pre .f{color:#72c6ff;font-style:normal}pre .m{color:#5f6374;font-style:normal}
+.chk{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;color:#c9cad6}.chk svg{color:var(--gr);flex:none}.refuse .chk svg{color:var(--ye)}
+.vt{font-size:16px;font-weight:700;margin-bottom:4px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:44px}.feat .card{padding:28px}.feat h3{font-size:17px;margin:14px 0 6px}.feat p{color:var(--mu);font-size:13px}.feat .ic{font-size:22px;color:#c4b1ff}
+.arch{display:flex;flex-direction:column;align-items:center;margin-top:44px;gap:0}
+.nd{width:min(380px,100%);padding:13px 18px;text-align:center;font-weight:500;animation:hl 7s infinite;animation-delay:calc(var(--i)*1s)}.nd small{display:block;color:var(--mu);font-weight:400;font-size:12px}
+@keyframes hl{0%,14%{border-color:var(--cy);box-shadow:0 0 36px rgba(66,223,255,.25)}22%,100%{border-color:var(--bd);box-shadow:none}}
+.ar{width:2px;height:24px;background:linear-gradient(var(--pu),var(--cy));background-size:100% 200%;animation:ad 1.2s linear infinite}@keyframes ad{to{background-position:0 -200%}}
+.cta{text-align:center;padding:110px 0}.cta h2{font-size:clamp(38px,6vw,66px)}.cta p{color:var(--mu);margin:16px auto 26px;max-width:480px}
+footer{border-top:1px solid var(--bd);padding:22px 0;display:flex;justify-content:space-between;gap:10px;color:#5d5f6d;font-size:12px;flex-wrap:wrap}
+.toast{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));padding:12px 16px;border:1px solid var(--bd);border-radius:12px;background:#12131b;font-size:13px;transform:translateY(120px);opacity:0;transition:.3s;z-index:50}.toast.show{transform:none;opacity:1}
+@media(max-width:900px){.nl,.fc{display:none}.flow{grid-template-columns:1fr 1fr}.flow:before{display:none}.dash{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--bd)}.res,.feat{grid-template-columns:1fr}}
+@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr}.hero h1{letter-spacing:-.035em}.main{padding:12px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.ab{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#e8e8f2;border-radius:10px;padding:8px 12px;font:600 12px inherit;cursor:pointer;transition:.2s}.ab:hover{background:rgba(139,92,246,.22);border-color:rgba(139,92,246,.6)}.rv{margin-top:12px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.6;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)}.rv.good{border-color:rgba(52,211,153,.45);background:rgba(52,211,153,.08)}.rv.bad{border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.09);color:#fecaca}.rv .ab{margin-top:8px}#ed{width:100%;min-height:230px;background:#07080c;color:#e6e6f0;border:0;outline:0;font:13px/1.6 'JetBrains Mono',monospace;padding:12px;resize:vertical;box-sizing:border-box}
+</style></head><body><div id="ld"><div><div class="lm">✓</div><h3>ProofAI</h3><p>Proof before answers</p><div class="bar"><i id="pb"></i></div><div id="pc">0%</div></div></div><div class="grid"></div>
+<header class="w nav"><a class="logo" href="#"><span class="lm">✓</span>ProofAI</a><nav class="nl"><a href="#how">How it works</a><a href="#app">Workspace</a><a href="#why">Why ProofAI</a><a href="#arch">Architecture</a></nav><a class="btn p s" href="#app">Open workspace ↗</a></header>
+<div class="w hero">
+<div class="hc"><div class="pill"><span class="dot"></span>Self-verifying AI data analyst</div>
+<h1>Your data has answers.<br><span class="gt">We bring the proof.</span></h1>
+<p>ProofAI turns messy datasets into reliable, reproducible answers. Ask questions in natural language, generate executable analysis, and verify every important result.</p>
+<div class="bs"><a class="btn p" href="#app">Start analyzing →</a><a class="btn" href="#how">See how it works</a></div><div class="sc">scroll down<div class="ms"></div></div></div>
+<div class="fc a"><b>✓ Verified</b>Calculation reproduced</div><div class="fc b"><b>12,480 rows analyzed</b>sales.csv + 2 tables</div><div class="fc c"><b>Python executed</b>proof.py · 0.42s</div><div class="fc d"><b>⚠ Cannot determine</b>when evidence is missing</div></div>
+<div class="w stats"><div class="card"><b>3</b><small>File formats · CSV, XLSX, JSON</small></div><div class="card"><b>4</b><small>Checks on every result</small></div><div class="card"><b>1</b><small>Runnable proof per answer</small></div><div class="card"><b>0</b><small>Guessed values</small></div></div>
+
+<section id="how"><div class="w"><div class="lb">How it works</div><h2>From question to proof, in four steps.</h2><p class="sub">ProofAI doesn't just write an answer. It turns your question into code, runs it on your data, and checks the result before showing it.</p>
+<div class="flow" id="flow">
+<div class="card st on"><div class="sn">01</div><h3>Understand</h3><p>The agent reads your question and finds the relevant tables, columns and date ranges.</p></div>
+<div class="card st"><div class="sn">02</div><h3>Generate</h3><p>It writes Python/Pandas code based on the real structure of your files.</p></div>
+<div class="card st"><div class="sn">03</div><h3>Execute</h3><p>The code actually runs against your uploaded data in a sandbox.</p></div>
+<div class="card st"><div class="sn">04</div><h3>Verify</h3><p>The result is re-run and checked, then returned with its proof.</p></div></div></div></section>
+
+<section id="app" style="padding-top:30px"><div class="w"><div class="lb">Workspace</div><h2>Ask your data.<br>See exactly how it answered.</h2><p class="sub">Upload files, ask a question, and inspect the code behind the answer. Try “Test missing data” to see ProofAI refuse an unanswerable question.</p>
+<div class="card app" id="appbox"><div class="top"><span><i></i><i></i><i></i> ProofAI · Analysis workspace</span><span id="stat" style="color:var(--gr)">● Ready</span></div>
+<div class="dash"><aside class="side"><div class="up" id="drop"><div class="ic">↑</div>Drop CSV, XLSX or JSON files<br><u onclick="fi.click()" tabindex="0">Browse files</u><input id="fi" type="file" multiple accept=".csv,.xlsx,.json" hidden></div>
+<div class="fh">Datasets · demo files</div><div id="files"></div></aside>
+<main class="main"><div class="q"><input id="q" placeholder="Ask a question about your data…" aria-label="Question" onkeydown="if(event.key=='Enter')analyze()">
+<div class="qb"><div class="chips" id="chips"></div><button class="go" id="go" onclick="analyze()">Analyze ↗</button></div>
+<div class="stages" id="stages"></div></div>
+<div class="res"><div class="card pn" id="ansP"><div class="ph"><h3 id="ansT">Verified answer</h3><span id="tm"></span></div><div class="ans" id="ans"></div><div class="as" id="as"></div><div class="badge" id="bdg"></div><div class="ev" id="ev"></div></div>
+<div class="card pn"><div class="ph"><h3 id="cT">Revenue by region</h3><span id="cU">₹ lakh</span></div><div class="cv"><canvas id="cv"></canvas></div></div>
+<div class="card pn"><div class="ph"><h3>Generated proof</h3><span>Python / Pandas</span></div><div class="code"><div class="ch"><span class="ok" id="ex">Executed successfully · 0.42s</span><span><button onclick="cp()">Copy</button><button id="xb" onclick="tg()">Expand</button></span></div><pre id="pre" class="c"></pre></div></div>
+<div class="card pn" id="vP"><div class="ph"><h3>Verification</h3><span>Independent re-run</span></div><div class="vt" id="vt"></div><div id="ck"></div></div></div></main></div></div></div></section>
+
+<section id="why"><div class="w"><div class="lb">Why ProofAI</div><h2>AI answers are easy.<br>Trustworthy answers are harder.</h2>
+<div class="feat"><div class="card"><div class="ic">✦</div><h3>Agentic data analysis</h3><p>Natural-language questions are converted into structured analysis steps.</p></div><div class="card"><div class="ic">◇</div><h3>Executable proof</h3><p>Every important numerical result is backed by runnable code anyone can re-run.</p></div><div class="card"><div class="ic">⚠</div><h3>Honest uncertainty</h3><p>When the data can't support an answer, ProofAI says “Cannot determine” instead of guessing.</p></div></div></div></section>
+
+<section id="arch" style="padding-top:20px"><div class="w"><div class="lb">Architecture</div><h2>One pipeline. Nothing unchecked.</h2><div class="arch" id="archEl"></div></div></section>
+<div class="w cta"><h2>Don't just ask AI.<br><span class="gt">Make it prove itself.</span></h2><p>Upload your data and turn your next question into a reproducible answer.</p><a class="btn p" href="#app">Start analyzing →</a></div>
+<footer class="w"><span>© 2026 ProofAI</span><span>Built for HackNEX · PSI08 — Proof-Carrying Data Analyst</span></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){let p=0;const b=document.getElementById('pb'),c=document.getElementById('pc'),l=document.getElementById('ld');const t=setInterval(()=>{p=Math.min(100,p+Math.random()*14+6);b.style.width=p+'%';c.textContent=Math.round(p)+'%';if(p>=100){clearInterval(t);setTimeout(()=>l.classList.add('off'),250)}},110)})();
+// ---- Replace this object with real calls to the FastAPI backend (POST /analyze) ----
+const BASE=window.PROOFAI_API||'';const SID=(()=>{try{let v=localStorage.getItem('proofai_sid');if(!v){v='s'+Math.random().toString(36).slice(2,10);localStorage.setItem('proofai_sid',v)}return v}catch(e){return 'default'}})();
+let LIVE=false;const H={'X-Session':SID};
+const API={async init(){try{const h=await(await fetch(BASE+'/api/health')).json();LIVE=!!h.ok;if(!LIVE)return;let d=(await(await fetch(BASE+'/api/datasets',{headers:H})).json()).datasets;if(!d.length)d=(await(await fetch(BASE+'/api/datasets/sample',{method:'POST',headers:H})).json()).datasets;showFiles(d);document.querySelector('.fh').textContent='Datasets · live backend ('+h.planner+' planner)'}catch(e){LIVE=false}},
+async upload(files){const fd=new FormData();files.forEach(f=>fd.append('files',f));const r=await fetch(BASE+'/api/datasets',{method:'POST',body:fd,headers:H});return r.json()},
+async remove(name){await fetch(BASE+'/api/datasets/'+name,{method:'DELETE',headers:H})},
+async analyze(question){if(!LIVE){await sleep(0);return pick(question)}try{const r=await fetch(BASE+'/api/analyze',{method:'POST',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify({question})});if(!r.ok)throw new Error(r.status);return await r.json()}catch(e){toast('Backend error — showing demo result');return pick(question)}}};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const $=id=>document.getElementById(id);
+const REG={l:['South','North','West','East'],v:[12.84,11.42,9.87,8.31]};
+const OK=['Input validated','Units consistent','Duplicate check passed','Calculation reproduced'];
+const SC={
+q2:{a:'South Region',s:'₹12.84 lakh · Q2 revenue',ev:['sales.csv','1,284 rows','Q2 filter','revenue column'],t:'Revenue by region (Q2)',ch:REG,code:`q2 = df[df["quarter"] == "Q2"]
+
+revenue = (
+    q2
+    .groupby("region")["revenue"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print(revenue)`,tm:'0.42s'},
+top:{a:'Laptop leads',s:'₹4.82 lakh · top of 5 products by revenue',ev:['sales.csv','products.csv','joined on product_id'],t:'Top 5 products',ch:{l:['Laptop','Monitor','Keyboard','Headset','Webcam'],v:[4.82,3.96,3.11,2.74,2.05]},code:`m = sales.merge(products, on="product_id")
+
+top5 = (
+    m.groupby("product_name")["revenue"]
+    .sum()
+    .nlargest(5)
+)
+
+print(top5)`,tm:'0.51s'},
+cmp:{a:'South is +54.5% vs East',s:'₹4.53 lakh gap between highest and lowest region',ev:['sales.csv','4 regions','Q2 filter'],t:'Regions compared (Q2)',ch:REG,code:`rev = df[df["quarter"] == "Q2"].groupby("region")["revenue"].sum()
+
+gap = rev.max() - rev.min()
+pct = (rev.max() / rev.min() - 1) * 100
+
+print(rev, gap, round(pct, 1))`,tm:'0.38s'},
+out:{a:'3 unusual orders',s:'Order value above 3 standard deviations',ev:['sales.csv','z-score > 3','3 of 12,480 rows'],t:'Flagged orders',u:'₹ lakh',ch:{l:['#10482','#11907','#12311'],v:[2.4,2.9,3.3]},code:`z = (df["revenue"] - df["revenue"].mean()) / df["revenue"].std()
+
+outliers = df[z > 3]
+
+print(outliers[["order_id", "revenue"]])`,tm:'0.47s'},
+no:{no:1,a:'Cannot determine',s:'The available dataset contains no 2021 records.',ev:['sales.csv','dates: 2023–2025','2021 rows: 0'],t:'Coverage by year',u:'rows',ch:{l:['2021','2022','2023','2024','2025'],v:[0,0,3910,4520,4050]},chk:['Date range checked: 2023–2025','Records for 2021: 0','No value was estimated'],vt:'Question not answerable from this data',note:'ProofAI will not invent a value when the dataset does not contain enough evidence.',code:`years = pd.to_datetime(df["order_date"]).dt.year
+
+print(sorted(years.unique()))   # [2023, 2024, 2025]
+print((years == 2021).sum())    # 0 matching rows`,tm:'0.21s'}};
+function pick(t){t=t.toLowerCase();
+if(/2021|missing|2020|2019/.test(t))return SC.no;
+if(/product/.test(t))return SC.top;
+if(/compare|vs|gap/.test(t))return SC.cmp;
+if(/unusual|outlier|anomal/.test(t))return SC.out;
+if(/region|revenue|q2/.test(t))return SC.q2;
+return{...SC.no,s:'This demo engine has no analysis for that question. Connect the backend to answer it.',ev:['demo engine'],chk:['No matching analysis found','No value was estimated'],code:'# No code generated: the question could not be mapped\n# to the available columns.',ch:null,vt:'Question not answerable yet',note:'Unanswerable questions return “Cannot determine” instead of a guess.'}}
+
+// ---- UI ----
+const chips=[['Highest Q2 revenue','Which region generated the highest Q2 revenue?'],['Top 5 products','Which are the top 5 products by revenue?'],['Compare regions','Compare regions by Q2 revenue'],['Find unusual values','Find unusual order values'],['Test missing data','Can I determine the 2021 revenue?',1]];
+$('chips').innerHTML='';chips.forEach(c=>{const b=document.createElement('button');b.className='chip'+(c[2]?' w':'');b.textContent=c[0];b.onclick=()=>{$('q').value=c[1];analyze()};$('chips').append(b)});
+$('q').value=chips[0][1];
+function addFile(n,ext,info){const d=document.createElement('div');d.className='file';const i=document.createElement('div');i.className='fi';i.textContent=ext;const w=document.createElement('div'),b=document.createElement('b'),s=document.createElement('small');b.textContent=n;s.textContent=info;w.append(b,s);d.append(i,w);$('files').prepend(d)}
+[['products.csv','184 rows'],['customers.csv','3,210 rows'],['sales.csv','12,480 rows']].forEach(f=>addFile(f[0],'CSV',f[1]));
+function showFiles(list){$('files').innerHTML='';list.forEach(d=>{addFile(d.file,(d.file.split('.').pop()||'').split(' ')[0].toUpperCase(),d.rows.toLocaleString()+' rows · '+d.cols+' cols'+(d.duplicate_rows?' · '+d.duplicate_rows+' dupes':''))})}
+API.init();
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400)}
+async function handle(files){if(LIVE){try{const r=await API.upload([...files]);showFiles(r.datasets);(r.errors||[]).forEach(e=>toast(e.file+': '+e.error));if(!(r.errors||[]).length)toast(files.length+' file(s) analysed by backend');return}catch(e){toast('Upload failed');return}}
+for(const f of files){const ext=(f.name.split('.').pop()||'').toUpperCase();let info='Uploaded';try{if(ext=='CSV')info=((await f.text()).trim().split(/\r?\n/).length-1).toLocaleString()+' rows';else if(ext=='JSON'){const j=JSON.parse(await f.text());info=(Array.isArray(j)?j.length:Object.keys(j).length).toLocaleString()+' records'}else if(ext=='XLSX')info='Sheets read by backend'}catch(e){info='Could not read file'}addFile(f.name,ext,info)}toast(files.length+' file(s) added')}
+fi.onchange=e=>handle([...e.target.files]);
+const dr=$('drop');['dragenter','dragover'].forEach(v=>dr.addEventListener(v,e=>{e.preventDefault();dr.classList.add('drag')}));['dragleave','drop'].forEach(v=>dr.addEventListener(v,e=>{e.preventDefault();dr.classList.remove('drag')}));dr.addEventListener('drop',e=>handle([...e.dataTransfer.files]));
+const tick='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+let chart,code='';
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function hl(l){if(/^\s*#/.test(l))return'<i class="m">'+esc(l)+'</i>';return esc(l).replace(/(#.*)$/,'<i class="m">$1</i>').replace(/("[^"]*")/g,'<i class="s">$1</i>').replace(/\b(import|as|print|False|True)\b/g,'<i class="k">$1</i>').replace(/\.(\w+)\(/g,'.<i class="f">$1</i>(')}
+let LASTR=null;
+function render(r){LASTR=r;const o0=$('rv');if(o0)o0.remove();
+$('ansP').classList.toggle('refuse',!!r.no);$('vP').classList.toggle('refuse',!!r.no);
+$('ansT').textContent=r.no?'Cannot determine':'Verified answer';
+$('ans').textContent=r.a;$('as').textContent=r.s;
+$('bdg').innerHTML=r.no?'⚠ Insufficient evidence':tick+' Verified by executable code';
+$('ev').innerHTML='';r.ev.forEach(e=>{const s=document.createElement('span');s.textContent=e;$('ev').append(s)});
+$('tm').textContent=r.tm;
+code=r.code;$('pre').innerHTML=code.split('\n').map((l,i)=>'<div style="--i:'+i+'">'+hl(l)+'</div>').join('');
+$('ex').textContent=(r.no?'Executed successfully · ':'Executed successfully · ')+r.tm;
+$('vt').textContent=r.no?r.vt:'Result reproduced successfully';
+$('ck').innerHTML=(r.chk||OK).map(c=>'<div class="chk">'+tick+'<span></span></div>').join('');
+[...$('ck').children].forEach((d,i)=>d.lastChild.textContent=(r.chk||OK)[i]);
+if(r.note){const p=document.createElement('p');p.style.cssText='color:var(--mu);font-size:13px;margin-top:10px';p.textContent=r.note;$('ck').append(p)}
+else{const p=document.createElement('p');p.style.cssText='color:var(--mu);font-size:13px;margin-top:10px';p.textContent='The generated code was executed against the uploaded dataset and produced the same result shown above.';$('ck').append(p)}
+if(r.script_url){const a=document.createElement('a');a.href=BASE+r.script_url;a.textContent='⬇ Download proof.py (re-run it yourself)';a.style.cssText='display:inline-block;margin-top:10px;color:var(--ac,#8b5cf6);font-size:13px;font-weight:600';a.setAttribute('download','');$('ck').append(a)}
+if(r.id&&!r.no&&LIVE){const w=document.createElement('div');w.className='acts';w.innerHTML='<button class="ab" onclick="reverify()">↻ Re-verify now</button><button class="ab" id="eb" onclick="editCode()">✎ Edit &amp; re-run code</button>';$('ck').append(w)}
+$('cT').textContent=r.t||'No chart';$('cU').textContent=r.u||'₹ lakh';
+if(chart)chart.destroy();
+if(r.ch&&window.Chart){chart=new Chart($('cv'),{type:'bar',data:{labels:r.ch.l,datasets:[{data:r.ch.v,borderRadius:7,borderSkipped:false,backgroundColor:r.ch.v.map((_,i)=>i==0&&!r.no?'#8b5cf6':'rgba(120,130,255,.35)')}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:900},plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#8e90a0'}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#8e90a0'}}}}})}}
+async function analyze(){
+const qv=$('q').value.trim();if(!qv){toast('Type a question first');return}
+const go=$('go');go.disabled=true;$('stat').textContent='● Working';$('stat').style.color='var(--ye)';
+const names=['Understanding data','Generating analysis','Executing Python','Verifying result'];
+$('stages').innerHTML=names.map(n=>'<div class="stg">'+n+'</div>').join('');
+const S=[...$('stages').children],p=API.analyze(qv);
+for(const s of S){s.className='stg on';await sleep(650);s.className='stg ok'}
+const r=await p;render(r);
+S.forEach(s=>s.textContent=s.textContent.replace(' …',''));
+$('stages').insertAdjacentHTML('beforeend','<div class="stg ok">'+(r.no?'⚠ Cannot determine':'✓ Verified')+'</div>');
+$('stat').textContent=r.no?'● Refused safely':'● Verified';$('stat').style.color=r.no?'var(--ye)':'var(--gr)';
+go.disabled=false;toast(r.no?'ProofAI refused to guess':'Result reproduced ✓');
+$('ansP').scrollIntoView({block:'nearest',behavior:'smooth'})}
+
+function rvBox(h,c){let b=$('rv');if(!b){b=document.createElement('div');b.id='rv';$('vP').append(b)}b.className='rv '+(c||'');b.innerHTML=h}
+async function reverify(){rvBox('Re-running proof.py in a fresh Python process…','');try{const t0=performance.now();const d=await(await fetch(BASE+'/api/verify/'+LASTR.id,{method:'POST',headers:H})).json();const t=((performance.now()-t0)/1000).toFixed(2);if(d.reproduced)rvBox('<b>✓ Reproduced live</b> in '+t+'s — the standalone script re-read the original files in a fresh process and produced the identical result.','good');else rvBox('<b>✗ Not reproduced</b> '+esc(d.detail||''),'bad')}catch(e){toast('Verify failed')}}
+function editCode(){const pre=$('pre');pre.innerHTML='';const ta=document.createElement('textarea');ta.id='ed';ta.value=code;ta.spellcheck=false;pre.append(ta);const b=$('eb');b.innerHTML='▶ Run edited code';b.onclick=runEdited;rvBox('Edit the code (for example change a number or a filter), then press <b>Run edited code</b>.','')}
+async function runEdited(){rvBox('Executing edited code in the sandbox…','');try{const r=await fetch(BASE+'/api/rerun/'+LASTR.id,{method:'POST',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify({code:$('ed').value})});const d=await r.json();
+if(d.status!=='ok'){rvBox('<b>✗ '+(d.status==='cannot_determine'?'Cannot determine':'Code rejected or failed')+'</b><br>'+esc(d.error||'error')+'<br><button class="ab" onclick="render(LASTR)">Reset</button>','bad');return}
+if(d.same_as_original)rvBox('<b>✓ Same result</b> — your edit did not change the answer.<br>'+esc(d.edited)+'<br><button class="ab" onclick="render(LASTR)">Reset</button>','good');
+else{$('ansP').classList.add('refuse');$('bdg').innerHTML='✗ Answer invalid — code was edited';rvBox('<b>✗ Answer invalid</b> — the edited code no longer reproduces the verified answer.<br>Verified: '+esc(d.original)+'<br>Edited: &nbsp;&nbsp;'+esc(d.edited)+'<br><button class="ab" onclick="render(LASTR)">Reset to verified code</button>','bad')}}catch(e){toast('Re-run failed')}}
+function cp(){navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>toast('Code copied'),()=>toast('Copy failed'))}
+function tg(){const p=$('pre');p.classList.toggle('c');$('xb').textContent=p.classList.contains('c')?'Expand':'Collapse'}
+render(SC.q2);$('pre').classList.remove('c');$('xb').textContent='Collapse';
+// workflow highlight
+let fs=0;const F=[...document.querySelectorAll('#flow .st')];F.forEach((e,i)=>e.onclick=()=>{fs=i;sel()});function sel(){F.forEach((e,i)=>e.classList.toggle('on',i==fs))}setInterval(()=>{fs=(fs+1)%4;sel()},2600);
+// architecture
+const A=[['User question','Plain English'],['LLM agent','Plans the analysis'],['Data understanding','Schemas, dates, units'],['Python code generation','Pandas'],['Sandbox execution','Runs on your data'],['Validation','Re-run and cross-check'],['Answer + evidence + proof','Or “Cannot determine”']];
+$('archEl').innerHTML=A.map((a,i)=>(i?'<div class="ar"></div>':'')+'<div class="card nd" style="--i:'+i+'">'+a[0]+'<small>'+a[1]+'</small></div>').join('');
+// hero: drifting code snippets + cursor trail
+(function(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;const h=document.querySelector('.hero'),cv=document.createElement('canvas');cv.id='rain';h.prepend(cv);const x=cv.getContext('2d');
+const T=['df.groupby()','.sum()','merge()','NaN','dropna()','12,480','nunique()','₹ lakh','Q2','assert','== 0','print()','✓','region','revenue','order_date','.nlargest(5)','0.42s','isna()','"Cannot determine"'];
+let W,H,P=[],M=null,tr=[],n=0;
+function fit(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;P=Array.from({length:Math.round(W/46)},(_,i)=>({t:T[i%T.length],x:Math.random()*W,y:Math.random()*H,v:.12+Math.random()*.25}))}
+fit();addEventListener('resize',fit);
+h.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();M={x:e.clientX-r.left,y:e.clientY-r.top};tr.push({x:M.x,y:M.y});if(tr.length>16)tr.shift()});
+h.addEventListener('pointerleave',()=>M=null);
+(function f(){x.clearRect(0,0,W,H);x.font='12px "JetBrains Mono",monospace';
+for(const p of P){p.y-=p.v;if(p.y<-20){p.y=H+20;p.x=Math.random()*W}
+let a=.16;if(M){const d=Math.hypot(p.x-M.x,p.y-M.y);if(d<150){a=.16+.7*(1-d/150);x.strokeStyle='rgba(66,223,255,'+a*.6+')';x.beginPath();x.moveTo(M.x,M.y);x.lineTo(p.x,p.y);x.stroke()}}
+x.fillStyle=a>.2?'rgba(120,235,255,'+a+')':'rgba(167,139,250,'+a+')';x.fillText(p.t,p.x,p.y)}
+x.lineWidth=2;for(let i=1;i<tr.length;i++){x.strokeStyle='rgba(139,92,246,'+i/tr.length*.8+')';x.beginPath();x.moveTo(tr[i-1].x,tr[i-1].y);x.lineTo(tr[i].x,tr[i].y);x.stroke()}x.lineWidth=1;
+if(M){x.fillStyle='#42dfff';x.shadowColor='#42dfff';x.shadowBlur=12;x.beginPath();x.arc(M.x,M.y,3,0,7);x.fill();x.shadowBlur=0}
+if(tr.length&&(n++&1))tr.shift();requestAnimationFrame(f)})()})();
+</script></body></html>

@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: proofai
+    runtime: docker
+    plan: free
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false        # optional: enables the Claude planner
