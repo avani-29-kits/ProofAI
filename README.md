@@ -1,4 +1,4 @@
-# ProofAI backend — Proof-Carrying Data Analyst (PSI08)
+# ProofAI backend — Proof-Carrying Data Analyst 
 
 Every numeric answer ships with executable code, is re-run in a **fresh interpreter from the original files**,
 and is only shown as *Verified* if both runs match. Unreliable questions return **Cannot determine**.
