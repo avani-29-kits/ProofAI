@@ -1,10 +1,22 @@
-FROM python:3.12-slim
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=10000 \
+    PROOFAI_DATA=/app/data
+
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential curl \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
-RUN python make_sample_data.py && useradd -m app && chown -R app /app
-USER app
-ENV PORT=8000 PROOFAI_DATA=/tmp/proofai
-EXPOSE 8000
+RUN python make_sample_data.py || true
+RUN mkdir -p /app/data
+
+EXPOSE 10000
 CMD ["python", "server.py"]
